@@ -29,7 +29,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-// INPUTLARNING FORM SUBMIT INTEGRATSIYASI
+// FORM SUBMIT INTEGRATSIYASI (TEZKOR REJIM)
 leadForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -44,13 +44,13 @@ leadForm.addEventListener("submit", (event) => {
     source: "RiOne Stars Landing Page"
   };
 
-  // Tugmani yuklanish holatiga o'tkazish
+  // 1. Tugmani bloklash va holatni o'zgartirish
   submitBtn.disabled = true;
   submitBtn.innerText = "Yuborilmoqda...";
 
-  const GOOGLE_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbwSbSKjMgv8708k24P8-1dwP_97jcun_77z1tUnjZPh44s90fbZd2uj8uIU2DVlstd2yw/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyM1F906o7hgC8JP4UffncVryOO-O_4X9g7bYivIkejFA-0gz-T28aagsg4uaKSrDVx/exec";
 
+  // 2. [Asosiy Tezlashtirish]: Fetch so'rovini yuboramiz, lekin (.then) javobini KUTIB O'TIRMAYMIZ!
   fetch(GOOGLE_SCRIPT_URL, {
     method: "POST",
     mode: "no-cors",
@@ -58,23 +58,15 @@ leadForm.addEventListener("submit", (event) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(leadData),
-  })
-    .then(() => {
-      successText.classList.add("show");
-      leadForm.reset();
+  }).catch(error => console.error("Orqa fonda xatolik:", error));
 
-      setTimeout(() => {
-        closeModal();
-        // 🚀 Botga yo'naltirish (1.6 soniyadan keyin)
-        window.location.href = "https://t.me/risolatumidovnarobot";
-      }, 1600);
-    })
-    .catch(error => {
-      console.error("Xatolik:", error);
-      alert("Xatolik yuz berdi. Iltimos qayta urinib ko'ring.");
-    })
-    .finally(() => {
-      submitBtn.disabled = false;
-      submitBtn.innerText = "Davom etish";
-    });
+  // 3. Foydalanuvchiga darhol muvaffaqiyatli oynani ko'rsatamiz (Kutish vaqti 0 ga tushdi)
+  successText.classList.add("show");
+  leadForm.reset();
+
+  // 4. Atigi 1 soniyadan keyin darhol Botga o'tkazib yuboramiz
+  setTimeout(() => {
+    closeModal();
+    window.location.href = "https://t.me/risolatumidovnarobot";
+  }, 1000);
 });
